@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { clearData } from "@/lib/utils/storage";
 import { router } from "expo-router";
+import SplashScreen from "@/components/splashScreen/splashScreen";
 
 export default function SearchHistoryScreen() {
   const logout = () => {
@@ -10,7 +11,8 @@ export default function SearchHistoryScreen() {
 
   return (
     <View className="flex-1 justify-center">
-      <Text className="text-lg">Announcement Screen</Text>
+      <SplashScreen/>
+      {/* <Text className="text-lg">Announcement Screen</Text>
       <TouchableOpacity
         className="bg-green-700 py-4 rounded-xl items-center"
         onPress={() => logout()}
@@ -23,7 +25,7 @@ export default function SearchHistoryScreen() {
         onPress={() => router.push("/profile")}
       >
         <Text className="text-white text-base font-medium">User Profile</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }

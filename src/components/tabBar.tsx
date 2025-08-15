@@ -57,12 +57,9 @@ export default function TabBar({ state, descriptors, navigation }: any) {
           >
             {
                 icons[index]({
-                    color: isFocused ? primaryColor: grayColor
+                    color: isFocused ? primaryColor: grayColor,
                 })
             }
-            {/* <CustomText weight={isFocused ? "medium": "regular"} style={{ color: isFocused ? primaryColor : grayColor , fontSize: 11}}>
-              {label}
-            </CustomText> */}
           </TouchableOpacity>
         );
       })}

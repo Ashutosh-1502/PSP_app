@@ -1,58 +1,118 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { View, Text } from "react-native";
-import * as SplashScreen from "expo-splash-screen";
-import { useFonts, Montserrat_700Bold } from "@expo-google-fonts/montserrat";
+import React, { useEffect, useState, useRef } from "react";
+import { Animated, Easing, Text, View, StyleSheet } from "react-native";
+import LottieView from "lottie-react-native";
 
-type CustomSplashScreenProps = {
-  onFinish?: () => void;
-};
-
-export default function CustomSplashScreen({
-  onFinish,
-}: CustomSplashScreenProps) {
+const SplashScreen = () => {
+  const textToType = "Prrotein structure prediction";
   const [displayedText, setDisplayedText] = useState("");
-  const fullText = "Protein Structure Prediction";
+  const [showSubtitle, setShowSubtitle] = useState(false);
+
+  const zoomAnim = useRef(new Animated.Value(1)).current;
+  const fadeAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setDisplayedText(fullText.slice(0, index + 1));
-      index++;
-      if (index === fullText.length) {
-        clearInterval(interval);
-        setTimeout(async () => {
-          await SplashScreen.hideAsync();
-          onFinish?.();
-        }, 2000);
+    let currentIndex = 0;
+    const onTypingComplete = () => {
+      setShowSubtitle(true);
+      Animated.sequence([
+        Animated.delay(500),
+
+        Animated.parallel([
+          Animated.timing(zoomAnim, {
+            toValue: 2,
+            duration: 1300,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 1300,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+        ]),
+      ]).start();
+    };
+
+    const typeCharacter = () => {
+      if (currentIndex < textToType.length) {
+        setDisplayedText((prev) => prev + textToType.charAt(currentIndex));
+        currentIndex++;
+        setTimeout(typeCharacter, 60);
+      } else {
+        onTypingComplete();
       }
-    }, 80);
+    };
 
-    return () => clearInterval(interval);
-  }, []);
-
-  const onLayoutRootView = useCallback(async () => {
-    await SplashScreen.preventAutoHideAsync();
-  }, []);
+    typeCharacter();
+  }, []); 
 
   return (
-    <View
-      onLayout={onLayoutRootView}
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text
+    <View style={styles.container}>
+      <Animated.View
         style={{
-          fontSize: 28,
-          color: "black",
-          fontFamily: "Montserrat_700Bold",
+          opacity: fadeAnim, 
+          transform: [{ scale: zoomAnim }], 
         }}
       >
-        {displayedText}
-      </Text>
+        <LottieView
+          source={require("@/assets/gifs/DNA.json")}
+          autoPlay
+          loop
+          style={{ width: 250, height: 250 }}
+        />
+      </Animated.View>
+
+      <View style={{height: 100}}>
+        <Animated.Text
+          style={[
+            styles.text,
+            {
+              opacity: fadeAnim,
+              transform: [{ scale: zoomAnim }],
+            },
+          ]}
+        >
+          {displayedText}
+        </Animated.Text>
+
+        {showSubtitle && (
+          <Animated.Text
+            style={[
+              styles.subtitle,
+              {
+                opacity: fadeAnim,
+                transform: [{ scale: zoomAnim }],
+              },
+            ]}
+          >
+            Fast and Accurate
+          </Animated.Text>
+        )}
+      </View>
     </View>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "white",
+  },
+  text: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "black",
+    textAlign: "center",
+  },
+  subtitle: {
+    fontSize: 20,
+    color: "black",
+    marginTop: 10,
+    textAlign: "center",
+  },
+});
+
+export default SplashScreen;

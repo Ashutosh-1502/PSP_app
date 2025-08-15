@@ -1,7 +1,4 @@
-import {
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -13,7 +10,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { PortalProvider } from "@gorhom/portal";
 import { useFonts } from "@expo-google-fonts/montserrat";
 import * as Splashscreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { fontFamily } from "@/components/fonts";
 
 Splashscreen.preventAutoHideAsync();
@@ -25,12 +22,12 @@ export default function RootLayout() {
     [fontFamily.montserratRegular]: require("@/assets/fonts/Montserrat-Regular.ttf"),
     [fontFamily.montserratMedium]: require("@/assets/fonts/Montserrat-Medium.ttf"),
     [fontFamily.montserratSemibold]: require("@/assets/fonts/Montserrat-SemiBold.ttf"),
-    [fontFamily.montserratBold]: require("@/assets/fonts/Montserrat-Bold.ttf")
+    [fontFamily.montserratBold]: require("@/assets/fonts/Montserrat-Bold.ttf"),
   });
 
   useEffect(() => {
-    if (loaded) {
-      Splashscreen.hideAsync();
+    if (loaded){
+      Splashscreen.hideAsync()
     }
   }, [loaded]);
 
@@ -40,19 +37,16 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1, width: "100%" }}>
       <PortalProvider>
         <ThemeProvider value={DefaultTheme}>
-          <ReactQueryProvider>
-            <SafeAreaView
-              className={colorScheme === "dark" ? "dark flex-1" : "flex-1"}
-              edges={[]}
-            >
-              <Slot />
-              <Toast />
-              <StatusBar
-                style="dark"
-                translucent={false}
-              />
-            </SafeAreaView>
-          </ReactQueryProvider>
+            <ReactQueryProvider>
+              <SafeAreaView
+                className={colorScheme === "dark" ? "dark flex-1" : "flex-1"}
+                edges={[]}
+              >
+                <Slot />
+                <Toast />
+                <StatusBar style="dark" translucent={false} />
+              </SafeAreaView>
+            </ReactQueryProvider>
         </ThemeProvider>
       </PortalProvider>
     </GestureHandlerRootView>
